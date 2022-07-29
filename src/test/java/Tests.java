@@ -3,34 +3,33 @@ import Locators.OrderPage;
 import Locators.RentPage;
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.junit.Test;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.util.Set;
 
-//Все Тесты проходят, если нужно что-то переделать или добавить, просьба, написать понятное ТЗ, спасибо
 
 public class Tests {
 
-    private WebDriver driver;
+    private static WebDriver driver;
 
-    // Проверяем текст в гармошке Chrome
-    @Test
-    public void testChrome() { // Проверка происходит в цикле метода
-        driver = new ChromeDriver();
+    @Before
+    public void setUp() {
+        driver = new FirefoxDriver();
         driver.get("https://qa-scooter.praktikum-services.ru/");
+    }
+    @Test
+    public void checkTextTest() {
         MainPage objMainPage = new MainPage(this.driver);
         objMainPage.clickAskButtons();
     }
-
-    // Проверяем верхнюю кнопку в Chrome
     @Test
-    public void testChrome1() {
-        driver = new ChromeDriver();
-        driver.get("https://qa-scooter.praktikum-services.ru/");
+    public void upButtonOrderTest() {
         MainPage objMainPage = new MainPage(this.driver);
         objMainPage.clickUpButtonOrder();
 
@@ -39,24 +38,18 @@ public class Tests {
 
         RentPage objRentPage = new RentPage(this.driver);
         objRentPage.fill("Привезти как можно скорее");
+        String actual = driver.findElement(By.xpath("/html/body/div/div/div[2]/div[5]/div[1]")).getText().substring(0,14);
+        Assert.assertEquals("Должны совпадать", "Заказ оформлен", actual);
     }
-
-    // Проверка url при нажатии на лого
     @Test
-    public void testLogo() {
-        driver = new ChromeDriver();
-        driver.get("https://qa-scooter.praktikum-services.ru/");
+    public void logoTest() {
         MainPage objMainPage = new MainPage(this.driver);
         objMainPage.clickLogo();
         String getUrl = driver.getCurrentUrl();
         Assert.assertEquals("Должны совпадать", getUrl, "https://qa-scooter.praktikum-services.ru/");
     }
-
-    // Проверка лого Яндекса
     @Test
-    public void testLogoYa() {
-        driver = new ChromeDriver();
-        driver.get("https://qa-scooter.praktikum-services.ru/");
+    public void logoYaTest() {
         MainPage objMainPage = new MainPage(this.driver);
         objMainPage.clickLogoYa();
 
@@ -73,12 +66,8 @@ public class Tests {
         String getUrl = driver.getCurrentUrl();
         Assert.assertEquals("Должны совпадать", "https://yandex.ru/", getUrl);
     }
-
-    // Проверка отображения ошибок
     @Test
-    public void testCheckErrors() {
-        driver = new ChromeDriver();
-        driver.get("https://qa-scooter.praktikum-services.ru/");
+    public void checkErrorsTest() {
         MainPage objMainPage = new MainPage(this.driver);
         objMainPage.clickUpButtonOrder();
         OrderPage objOrderPage = new OrderPage(this.driver);
@@ -92,31 +81,15 @@ public class Tests {
         String fourthError = driver.findElement(By.xpath("//*[@id=\"root\"]/div/div[2]/div[2]/div[5]/div")).getText();
         Assert.assertEquals("Должны совпадать", "Введите корректный номер", fourthError);
     }
-    //Проверка картинки в не существующих заказах
     @Test
-    public void testCheckNoOrder() {
-        driver = new ChromeDriver();
-        driver.get("https://qa-scooter.praktikum-services.ru/");
+    public void checkNoOrderTest() {
         MainPage objMainPage = new MainPage(this.driver);
         objMainPage.searchOrder("12343");
         String actual = driver.findElement(By.xpath("//*[@id='root']/div/div[2]/div[2]/img")).getAttribute("alt");
         Assert.assertEquals("Должна быть картинка", "Not found", actual);
     }
-
-    // Тесты на FireFox
-    // Проверяем текст в гармошке FireFox
     @Test
-    public void testFirefox() { // Проверка происходит в цикле метода
-        driver = new FirefoxDriver();
-        driver.get("https://qa-scooter.praktikum-services.ru/");
-        MainPage objMainPage = new MainPage(this.driver);
-        objMainPage.clickAskButtons();
-    }
-    // Проверяем нижнюю кнопку в FireFox
-    @Test
-    public void testFirefox1() {
-        driver = new FirefoxDriver();
-        driver.get("https://qa-scooter.praktikum-services.ru/");
+    public void downButtonOrderTest() {
         MainPage objMainPage = new MainPage(this.driver);
         objMainPage.clickDownButtonOrder();
 
@@ -125,6 +98,8 @@ public class Tests {
 
         RentPage objRentPage = new RentPage(this.driver);
         objRentPage.fill("Привезти как можно скорее");
+        String actual = driver.findElement(By.xpath("/html/body/div/div/div[2]/div[5]/div[1]")).getText().substring(0,14);
+        Assert.assertEquals("Должны совпадать", "Заказ оформлен", actual);
     }
     @After
     public void teardown() {
